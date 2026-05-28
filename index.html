@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automação Industrial & Sistemas SCADA</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-dark: #0a1628;
+      --blue-mid: #0d2244;
+      --blue-accent: #1a6fc4;
+      --blue-light: #2e9cca;
+      --cyan: #00d4ff;
+      --green: #00e676;
+      --orange: #ff9800;
+      --red: #f44336;
+      --yellow: #ffd600;
+      --text: #e8f0fe;
+      --text-muted: #90a4ae;
+      --card-bg: rgba(255,255,255,0.05);
+      --card-border: rgba(0,212,255,0.2);
+      --section-gap: 80px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--blue-dark);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--blue-mid); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-accent); border-radius: 3px; }
+
+    /* ===== HEADER / HERO ===== */
+    header {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, rgba(26,111,196,0.35) 0%, transparent 70%),
+                  linear-gradient(180deg, #0a1628 0%, #0d2244 100%);
+    }
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.07) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove { from { background-position: 0 0; } to { background-position: 50px 50px; } }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0,212,255,0.15);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      max-width: 900px;
+    }
+    header p.subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 20px auto 0;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 50px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat .num {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--cyan);
+      display: block;
+    }
+    .hero-stat .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ===== NAV ===== */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,22,40,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 20px;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--cyan);
+      background: rgba(0,212,255,0.1);
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--section-gap) 20px;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-label::before {
+      content: '';
+      width: 30px;
+      height: 2px;
+      background: var(--cyan);
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .section-intro {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 800px;
+      margin-bottom: 48px;
+    }
+
+    /* ===== IMAGES ===== */
+    .img-container {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      margin-bottom: 30px;
+      background: var(--blue-mid);
+    }
+    .img-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s;
+    }
+    .img-container:hover img {
+      transform: scale(1.02);
+    }
+    .img-caption {
+      padding: 15px 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      background: rgba(0,0,0,0.2);
+    }
+
+    /* ===== CARDS ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,212,255,0.5);
+    }
+
+    /* ===== PYRAMID ===== */
+    .pyramid-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .pyramid-visual {
+      flex: 0 0 auto;
+      width: 100%;
+      max-width: 480px;
+    }
+    .pyramid-level {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .pyramid-num {
+      width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; margin-right: 12px;
+    }
+    .pyramid-bar {
+      height: 52px; border-radius: 8px; display: flex; align-items: center; padding: 0 16px; font-weight: 600; font-size: 0.9rem; color: #fff; flex: 1;
+    }
+    .pyramid-details {
+      flex: 1; min-width: 280px;
+    }
+    .detail-card {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 24px; display: none;
+    }
+    .detail-card.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== NETWORK DIAGRAM ===== */
+    .network-diagram {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .net-layers {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .net-layer {
+      display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-radius: 10px; margin-bottom: 4px;
+    }
+    .net-layer-info { text-align: left; flex: 1; }
+    .net-layer-info h4 { font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .net-layer-proto { font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
+
+    /* ===== CASE STUDY SECTION ===== */
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .case-card {
+      background: rgba(0,212,255,0.03);
+      border: 1px solid rgba(0,212,255,0.1);
+      border-radius: 20px;
+      padding: 30px;
+    }
+    .case-list { list-style: none; font-size: 0.85rem; color: var(--text-muted); }
+    .case-list li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+    .case-list li::before { content: '✔'; position: absolute; left: 0; color: var(--green); }
+
+    /* ===== SUMMARY SECTION ===== */
+    .summary-box {
+      background: linear-gradient(135deg, rgba(26,111,196,0.1), rgba(0,212,255,0.1));
+      border: 1px solid var(--cyan);
+      border-radius: 24px;
+      padding: 40px;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 25px;
+    }
+
+    /* ===== HIGHLIGHT BOX ===== */
+    .highlight-box {
+      background: rgba(0,212,255,0.07);
+      border-left: 4px solid var(--cyan);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+
+    footer {
+      background: var(--blue-mid);
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<header id="inicio">
+  <div class="grid-bg"></div>
+  <span class="hero-badge">Automação Industrial</span>
+  <h1>Sistemas SCADA:<br>Do Campo ao Painel do Operador</h1>
+  <p class="subtitle">Uma visão completa da arquitetura de automação industrial — níveis de atuação, protocolos de comunicação e integração de redes.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num" data-count="5">0</span><span class="label">Níveis</span></div>
+    <div class="hero-stat"><span class="num" data-count="6">0</span><span class="label">Protocolos</span></div>
+    <div class="hero-stat"><span class="num" data-count="1970">0</span><span class="label">Origem</span></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#inicio" class="nav-logo">&#9889; SCADA Guide</a>
+    <ul class="nav-links">
+      <li><a href="#o-que-e">O que é SCADA</a></li>
+      <li><a href="#niveis">Níveis</a></li>
+      <li><a href="#fluxo-dados">Fluxo de Dados</a></li>
+      <li><a href="#rede">Rede</a></li>
+      <li><a href="#caso-estudo">Caso: Hidrelétrica</a></li>
+      <li><a href="#resumo">Resumo</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- O QUE É SCADA -->
+<section id="o-que-e">
+  <div class="section-label">Fundamentos</div>
+  <h2>O que é um Sistema SCADA?</h2>
+  
+  <div class="img-container">
+    <img src="assets/sala_controle.jpg" alt="Sala de Controle SCADA">
+    <div class="img-caption"><strong>Sala de Controle Moderna:</strong> Onde o software SCADA consolida dados de milhares de sensores para visualização e tomada de decisão.</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card"><h3>Sensores & Atuadores</h3><p>Coletam dados físicos (temperatura, pressão) e executam comandos (abrir válvulas).</p></div>
+    <div class="card"><h3>CLP / RTU</h3><p>Processam a lógica local e transmitem dados para a central via rede industrial.</p></div>
+    <div class="card"><h3>IHM</h3><p>Interface gráfica que traduz bits e bytes em informações visuais intuitivas para o operador.</p></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- NÍVEIS DE ATUAÇÃO -->
+<section id="niveis">
+  <div class="section-label">Hierarquia</div>
+  <h2>Pirâmide de Automação (ISA-95)</h2>
+  <div class="pyramid-container">
+    <div class="pyramid-visual">
+      <div class="pyramid-level" onclick="showLevel(4)"><div class="pyramid-num" style="background:rgba(244,67,54,0.2);color:#f44336">4</div><div class="pyramid-bar" style="background:#c62828">Corporativo (ERP)</div></div>
+      <div class="pyramid-level" onclick="showLevel(3)"><div class="pyramid-num" style="background:rgba(255,152,0,0.2);color:#ff9800">3</div><div class="pyramid-bar" style="background:#e65100">Planejamento (MES)</div></div>
+      <div class="pyramid-level" onclick="showLevel(2)"><div class="pyramid-num" style="background:rgba(255,214,0,0.2);color:#ffd600">2</div><div class="pyramid-bar" style="background:#f9a825">Supervisão (SCADA)</div></div>
+      <div class="pyramid-level" onclick="showLevel(1)"><div class="pyramid-num" style="background:rgba(0,230,118,0.2);color:#00e676">1</div><div class="pyramid-bar" style="background:#1b5e20">Controle (CLP)</div></div>
+      <div class="pyramid-level" onclick="showLevel(0)"><div class="pyramid-num" style="background:rgba(0,212,255,0.2);color:#00d4ff">0</div><div class="pyramid-bar" style="background:#01579b">Campo (Sensores)</div></div>
+    </div>
+    <div class="pyramid-details">
+      <div class="detail-card active" id="level-default"><h3>Clique nos níveis para detalhes</h3></div>
+      <div class="detail-card" id="level-0"><h3>Nível 0 — Campo</h3><p>Sensores e atuadores medindo grandezas físicas.</p></div>
+      <div class="detail-card" id="level-1"><h3>Nível 1 — Controle</h3><p>CLPs executando lógica de intertravamento e malhas PID.</p></div>
+      <div class="detail-card" id="level-2"><h3>Nível 2 — Supervisão</h3><p>SCADA e IHMs centralizando o monitoramento.</p></div>
+      <div class="detail-card" id="level-3"><h3>Nível 3 — Planejamento</h3><p>MES gerenciando a produção e eficiência (OEE).</p></div>
+      <div class="detail-card" id="level-4"><h3>Nível 4 — Corporativo</h3><p>ERP integrando a planta com as decisões de negócio.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FLUXO DE DADOS -->
+<section id="fluxo-dados">
+  <div class="section-label">Visão Sistêmica</div>
+  <h2>Fluxo: Da Coleta à Central</h2>
+  <p class="section-intro">Veja como as informações de uma infraestrutura (como uma cidade inteligente ou estação de tratamento) viajam até o SCADA.</p>
+  
+  <div class="img-container">
+    <img src="assets/arquitetura_cidade.png" alt="Arquitetura SCADA em Cidade Inteligente/Água">
+    <div class="img-caption"><strong>Arquitetura Distribuída:</strong> Sensores em campo (RTUs) coletam dados de vazão e pressão, que são transmitidos via rádio, fibra ou 5G até os servidores centrais.</div>
+  </div>
+
+  <div class="highlight-box">
+    <p>O dado nasce como um sinal elétrico no sensor, é digitalizado pelo CLP/RTU, encapsulado em protocolos como <strong>DNP3</strong> ou <strong>Modbus TCP</strong>, e viaja pela rede até ser interpretado pelo servidor SCADA.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- REDE E PROTOCOLOS -->
+<section id="rede">
+  <div class="section-label">Infraestrutura</div>
+  <h2>Caminho pela Rede e Protocolos</h2>
+  
+  <div class="img-container">
+    <img src="assets/fluxo_rede.png" alt="Fluxo de Rede e Protocolos SCADA">
+    <div class="img-caption"><strong>Segmentação de Rede:</strong> O tráfego de controle é isolado via VLANs e Firewalls para garantir que falhas na rede corporativa não afetem a operação industrial.</div>
+  </div>
+
+  <div class="network-diagram">
+    <div class="net-layers">
+      <div class="net-layer" style="background:rgba(244,67,54,0.05);border:1px solid rgba(244,67,54,0.2)">
+        <div class="net-layer-info"><h4>Rede Corporativa (TI)</h4><p>ERP, Internet, Gestão.</p></div>
+        <span class="net-layer-proto" style="background:var(--red)">HTTP/TCP</span>
+      </div>
+      <div style="color:var(--cyan);margin:5px">⬇ Firewall ⬇</div>
+      <div class="net-layer" style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2)">
+        <div class="net-layer-info"><h4>Rede de Supervisão (TO)</h4><p>SCADA, Historian, IHM.</p></div>
+        <span class="net-layer-proto" style="background:var(--cyan);color:#000">OPC UA / DNP3</span>
+      </div>
+      <div style="color:var(--cyan);margin:5px">⬇ Switch Industrial ⬇</div>
+      <div class="net-layer" style="background:rgba(0,230,118,0.05);border:1px solid rgba(0,230,118,0.2)">
+        <div class="net-layer-info"><h4>Rede de Controle</h4><p>CLPs, RTUs, I/Os Remotos.</p></div>
+        <span class="net-layer-proto" style="background:var(--green);color:#000">Modbus / Profinet</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CASO HIDRELÉTRICA -->
+<section id="caso-estudo">
+  <div class="section-label">Aplicação Prática</div>
+  <h2>Estudo de Caso: Usina Hidrelétrica</h2>
+  
+  <div class="img-container">
+    <img src="assets/arquitetura_hidreletrica.png" alt="Arquitetura SCADA em Hidrelétrica">
+    <div class="img-caption"><strong>Hierarquia em Hidrelétricas:</strong> O controle de turbinas e geradores (Nível 1) reporta dados de vibração e temperatura para o SCADA (Nível 2) em tempo real.</div>
+  </div>
+
+  <div class="case-grid">
+    <div class="case-card">
+      <h3>Controle de Turbinas</h3>
+      <ul class="case-list">
+        <li>Monitoramento de rotação (RPM).</li>
+        <li>Ajuste de palhetas para controle de frequência.</li>
+        <li>Intertravamento de segurança contra sobrevelocidade.</li>
+      </ul>
+    </div>
+    <div class="case-card">
+      <h3>Monitoramento de Geradores</h3>
+      <ul class="case-list">
+        <li>Controle de excitação e tensão.</li>
+        <li>Sincronismo automático com a rede nacional.</li>
+        <li>Análise térmica de enrolamentos.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RESUMO FINAL -->
+<section id="resumo">
+  <div class="section-label">Conclusão</div>
+  <div class="summary-box">
+    <h2>Resumo: O Ecossistema SCADA</h2>
+    <div class="summary-grid">
+      <div class="summary-item"><h4>Coleta de Dados</h4><p>Sensores e RTUs em campo transformam grandezas físicas em sinais digitais.</p></div>
+      <div class="summary-item"><h4>Viagem pela Rede</h4><p>Protocolos como Modbus e DNP3 garantem que o dado chegue íntegro à central.</p></div>
+      <div class="summary-item"><h4>Supervisão</h4><p>O SCADA organiza tudo em telas gráficas para o controle humano eficiente.</p></div>
+      <div class="summary-item"><h4>Segurança</h4><p>VLANs e Firewalls protegem a operação contra ameaças cibernéticas.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Página construída para fins educacionais sobre <strong>Automação Industrial & SCADA</strong>.</p>
+  <p style="margin-top:10px;font-size:0.75rem;opacity:0.6">&copy; 2026 Manus AI Industrial Solutions</p>
+</footer>
+
+<script>
+  // Count animation
+  const counters = document.querySelectorAll('.num');
+  counters.forEach(counter => {
+    const target = +counter.getAttribute('data-count');
+    const updateCount = () => {
+      const count = +counter.innerText;
+      const speed = target / 50;
+      if (count < target) {
+        counter.innerText = Math.ceil(count + speed);
+        setTimeout(updateCount, 20);
+      } else { counter.innerText = target; }
+    };
+    updateCount();
+  });
+
+  function showLevel(level) {
+    document.querySelectorAll('.detail-card').forEach(card => card.classList.remove('active'));
+    document.getElementById('level-' + level).classList.add('active');
+  }
+</script>
+</body>
+</html>
