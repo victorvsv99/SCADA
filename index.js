@@ -1054,4 +1054,410 @@
           <h4>🏢 Rede Corporativa (TI)</h4>
           <p>ERP, Internet, e-mail, Gestão.</p>
         </div>
-        <span class="net-layer-proto" style="background:var(--red)">HTTP / TCP
+        <span class="net-layer-proto" style="background:var(--red)">HTTP / TCP</span>
+      </div>
+      <div class="net-connector">⬇ Firewall Industrial ⬇</div>
+      <div class="net-layer" style="background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.2)">
+        <div class="net-layer-info">
+          <h4>🖥️ Rede de Supervisão (TO)</h4>
+          <p>SCADA, Historian, IHM, Servidores.</p>
+        </div>
+        <span class="net-layer-proto" style="background:var(--cyan);color:#000">OPC UA / DNP3</span>
+      </div>
+      <div class="net-connector">⬇ Switch Industrial ⬇</div>
+      <div class="net-layer" style="background:rgba(0,230,118,0.04);border:1px solid rgba(0,230,118,0.2)">
+        <div class="net-layer-info">
+          <h4>⚙️ Rede de Controle</h4>
+          <p>CLPs, RTUs, I/Os Remotos, Sensores.</p>
+        </div>
+        <span class="net-layer-proto" style="background:var(--green);color:#000">Modbus / Profinet</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CASO HIDRELÉTRICA -->
+<section id="caso-estudo">
+  <div class="section-label reveal">Aplicação Prática</div>
+  <h2 class="reveal">Estudo de Caso: Usina Hidrelétrica</h2>
+  
+  <div class="img-container reveal">
+    <img src="assets/arquitetura_hidreletrica.png" alt="Arquitetura SCADA em Hidrelétrica" loading="lazy">
+    <div class="img-caption"><strong>Hierarquia em Hidrelétricas:</strong> O controle de turbinas e geradores (Nível 1) reporta dados de vibração e temperatura para o SCADA (Nível 2) em tempo real.</div>
+  </div>
+
+  <div class="case-grid">
+    <div class="case-card reveal stagger-1">
+      <h3>⚡ Controle de Turbinas</h3>
+      <ul class="case-list">
+        <li>Monitoramento de rotação (RPM) em tempo real.</li>
+        <li>Ajuste automático de palhetas para controle de frequência.</li>
+        <li>Intertravamento de segurança contra sobrevelocidade.</li>
+        <li>Diagnóstico preditivo por análise de vibração.</li>
+      </ul>
+    </div>
+    <div class="case-card reveal stagger-2">
+      <h3>🔋 Monitoramento de Geradores</h3>
+      <ul class="case-list">
+        <li>Controle de excitação e regulação de tensão.</li>
+        <li>Sincronismo automático com a rede nacional (SIN).</li>
+        <li>Análise térmica contínua de enrolamentos.</li>
+        <li>Proteção diferencial e contra sobrecorrente.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- RESUMO FINAL -->
+<section id="resumo">
+  <div class="section-label reveal">Conclusão</div>
+  <div class="summary-box reveal">
+    <h2>Resumo: O Ecossistema SCADA</h2>
+    <p class="section-intro" style="margin-bottom:10px">Cada camada colabora para transformar sinais físicos em decisões inteligentes.</p>
+    <div class="summary-grid">
+      <div class="summary-item reveal stagger-1">
+        <h4>📡 Coleta de Dados</h4>
+        <p>Sensores e RTUs em campo transformam grandezas físicas em sinais digitais padronizados.</p>
+      </div>
+      <div class="summary-item reveal stagger-2">
+        <h4>🌐 Viagem pela Rede</h4>
+        <p>Protocolos como Modbus e DNP3 garantem que o dado chegue íntegro à central de supervisão.</p>
+      </div>
+      <div class="summary-item reveal stagger-3">
+        <h4>🖥️ Supervisão</h4>
+        <p>O SCADA organiza tudo em telas gráficas para o controle humano eficiente e tomada de decisões.</p>
+      </div>
+      <div class="summary-item reveal stagger-4">
+        <h4>🔒 Segurança</h4>
+        <p>VLANs, Firewalls e segmentação protegem a operação contra ameaças cibernéticas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Página construída para fins educacionais sobre <strong>Automação Industrial & SCADA</strong>.</p>
+  <p style="margin-top:12px;font-size:0.75rem;opacity:0.5">&copy; 2026 — Industrial SCADA Guide</p>
+</footer>
+
+<script>
+  // ===== PARTICLE CANVAS =====
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const PARTICLE_COUNT = 60;
+
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.offsetWidth;
+    canvas.height = canvas.parentElement.offsetHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.speedY = (Math.random() - 0.5) * 0.5;
+      this.opacity = Math.random() * 0.5 + 0.1;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 212, 255, ${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(0, 212, 255, ${0.08 * (1 - dist / 150)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    drawLines();
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+
+  // ===== COUNT ANIMATION WITH EASING =====
+  function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  }
+
+  function animateCounter(el) {
+    const target = +el.getAttribute('data-count');
+    const duration = 2000;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutExpo(progress);
+      el.innerText = Math.round(easedProgress * target);
+      if (progress < 1) requestAnimationFrame(update);
+      else el.innerText = target;
+    }
+    requestAnimationFrame(update);
+  }
+
+  // ===== INTERSECTION OBSERVER FOR REVEALS =====
+  const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    revealObserver.observe(el);
+  });
+
+  // Observe hero counters
+  const heroStatsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.num').forEach(animateCounter);
+        heroStatsObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) heroStatsObserver.observe(heroStats);
+
+  // ===== PYRAMID INTERACTION =====
+  document.querySelectorAll('.pyramid-level').forEach(level => {
+    level.addEventListener('click', () => {
+      const lvl = level.getAttribute('data-level');
+      document.querySelectorAll('.detail-card').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.pyramid-level').forEach(l => l.classList.remove('active-level'));
+      document.getElementById('level-' + lvl).classList.add('active');
+      level.classList.add('active-level');
+    });
+  });
+
+  // ===== ACTIVE NAV LINK ON SCROLL =====
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  function updateActiveNav() {
+    const scrollY = window.scrollY + 120;
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      const id = section.getAttribute('id');
+      if (scrollY >= top && scrollY < top + height) {
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('data-section') === id) link.classList.add('active');
+        });
+      }
+    });
+  }
+
+  // ===== SCROLL PROGRESS BAR =====
+  function updateScrollProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('scrollProgress').style.width = progress + '%';
+  }
+
+  // ===== NAV SHADOW ON SCROLL =====
+  function updateNavShadow() {
+    const nav = document.getElementById('mainNav');
+    if (window.scrollY > 50) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }
+
+  // ===== BACK TO TOP BUTTON =====
+  function updateBackToTop() {
+    const btn = document.getElementById('backToTop');
+    if (window.scrollY > 500) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+  }
+  document.getElementById('backToTop').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ===== COMBINED SCROLL HANDLER =====
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateActiveNav();
+        updateScrollProgress();
+        updateNavShadow();
+        updateBackToTop();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // ===== HAMBURGER MENU =====
+  const hamburger = document.getElementById('hamburger');
+  const navLinksEl = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navLinksEl.classList.toggle('open');
+  });
+  // Close menu on link click (mobile)
+  navLinksEl.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navLinksEl.classList.remove('open');
+    });
+  });
+
+  // ===== THEME TOGGLE =====
+  const themeToggle = document.getElementById('themeToggle');
+  const savedTheme = localStorage.getItem('scada-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('scada-theme', next);
+    themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+    // Update chart colors
+    if (window.protocolChartInstance) updateChartTheme(next);
+  });
+
+  // ===== CHART.JS =====
+  function getChartColors(theme) {
+    return {
+      textColor: theme === 'dark' ? '#e8f0fe' : '#1a202c',
+      gridColor: theme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)',
+    };
+  }
+
+  function createChart() {
+    const theme = document.documentElement.getAttribute('data-theme');
+    const colors = getChartColors(theme);
+    const ctxChart = document.getElementById('protocolChart').getContext('2d');
+
+    window.protocolChartInstance = new Chart(ctxChart, {
+      type: 'doughnut',
+      data: {
+        labels: ['Modbus TCP', 'DNP3', 'OPC UA', 'Profinet', 'IEC 61850', 'Outros'],
+        datasets: [{
+          data: [28, 22, 20, 14, 10, 6],
+          backgroundColor: [
+            '#00d4ff', '#1a6fc4', '#00e676',
+            '#ff9800', '#f44336', '#ffd600'
+          ],
+          borderColor: theme === 'dark' ? '#0a1628' : '#f5f7fa',
+          borderWidth: 3,
+          hoverOffset: 12
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: colors.textColor,
+              padding: 20,
+              font: { family: 'Inter', size: 12, weight: '500' },
+              usePointStyle: true,
+              pointStyleWidth: 12
+            }
+          },
+          tooltip: {
+            backgroundColor: theme === 'dark' ? 'rgba(13,34,68,0.95)' : 'rgba(255,255,255,0.95)',
+            titleColor: theme === 'dark' ? '#fff' : '#1a202c',
+            bodyColor: theme === 'dark' ? '#90a4ae' : '#4a5568',
+            borderColor: 'rgba(0,212,255,0.2)',
+            borderWidth: 1,
+            cornerRadius: 10,
+            padding: 14,
+            titleFont: { family: 'Inter', weight: '700' },
+            bodyFont: { family: 'Inter' },
+            callbacks: {
+              label: function(context) {
+                return ` ${context.label}: ${context.parsed}% do mercado`;
+              }
+            }
+          }
+        },
+        cutout: '60%',
+        animation: {
+          animateRotate: true,
+          duration: 1500
+        }
+      }
+    });
+  }
+
+  function updateChartTheme(theme) {
+    const chart = window.protocolChartInstance;
+    if (!chart) return;
+    const colors = getChartColors(theme);
+    chart.options.plugins.legend.labels.color = colors.textColor;
+    chart.data.datasets[0].borderColor = theme === 'dark' ? '#0a1628' : '#f5f7fa';
+    chart.options.plugins.tooltip.backgroundColor = theme === 'dark' ? 'rgba(13,34,68,0.95)' : 'rgba(255,255,255,0.95)';
+    chart.options.plugins.tooltip.titleColor = theme === 'dark' ? '#fff' : '#1a202c';
+    chart.options.plugins.tooltip.bodyColor = theme === 'dark' ? '#90a4ae' : '#4a5568';
+    chart.update();
+  }
+
+  // Initialize chart when section is visible
+  const chartObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !window.protocolChartInstance) {
+        createChart();
+        chartObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  const chartEl = document.getElementById('protocolChart');
+  if (chartEl) chartObserver.observe(chartEl);
+
+  // ===== KEYBOARD NAVIGATION =====
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      hamburger.classList.remove('open');
+      navLinksEl.classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
